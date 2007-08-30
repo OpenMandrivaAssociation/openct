@@ -1,14 +1,16 @@
 %define lib_major 1
 %define lib_name %mklibname %{name} %{lib_major}
+%define libdevel %mklibname -d %{name}
+%define olddevel %mklibname -d %{name} 1
 
 Summary:	Smartcard Terminal Tnterface
 Name:		openct
-Version:	0.6.11
-Release:	%mkrel 3
+Version:	0.6.14
+Release:	%mkrel 1
 License:	LGPL
 URL:		http://www.opensc.org
 Source0:	http://www.opensc.org/files/%{name}-%{version}.tar.gz
-BuildRoot:  %{_tmppath}/%{name}-%{version}-root
+BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 BuildRequires:	pcsc-lite-devel flex libusb-devel
 BuildRequires:	libltdl-devel udev-tools
 Requires:	%{lib_name} = %{version}
@@ -33,15 +35,16 @@ OpenCT.
 If you want to compile applications using this library, you also need
 the %{name}-devel package.
 
-%package	-n %{lib_name}-devel
+%package	-n %{libdevel}
 Requires:	%{lib_name} = %{version}
 Group:		Development/C
 Summary:	Supplementary files for developing %{name} applications
 Provides: 	libopenct-devel = %{version}-%{release}
 Obsoletes:	libopenct0-devel <= 0.6.6-4mdk
 Obsoletes:	libopenct-devel <= 0.6.6-4mdk
+Obsoletes:      %{olddevel} < 0.6.14
 
-%description	-n %{lib_name}-devel
+%description	-n %{libdevel}
 Header files, static libraries, and documentation for %{name}.
 
 %prep
@@ -105,12 +108,11 @@ rm -rf %{buildroot}
 %doc TODO
 %{_libdir}/*.so.*
 
-%files -n %{lib_name}-devel
+%files -n %{libdevel}
 %defattr(-,root,root)
 %doc TODO
 %{_libdir}/*.so
 %{_libdir}/*.*a
 %{_libdir}/pkgconfig/*.pc
 %{_includedir}/*
-
 
