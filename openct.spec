@@ -10,7 +10,6 @@ Release:	%mkrel 1
 License:	LGPL
 URL:		http://www.opensc.org
 Source0:	http://www.opensc.org/files/%{name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-root
 BuildRequires:	pcsc-lite-devel flex libusb-devel
 BuildRequires:	libltdl-devel udev-tools
 Requires:	%{lib_name} = %{version}
