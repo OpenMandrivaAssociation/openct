@@ -6,7 +6,7 @@
 Summary:	Smartcard Terminal Tnterface
 Name:		openct
 Version:	0.6.14
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	LGPL
 URL:		http://www.opensc.org
 Source0:	http://www.opensc.org/files/%{name}-%{version}.tar.gz
