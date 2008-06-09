@@ -88,8 +88,12 @@ rm -rf %{buildroot}
 %post 
 %_post_service openct
 
+%if %mdkversion < 200900
 %post -p /sbin/ldconfig -n %{lib_name}
+%endif
+%if %mdkversion < 200900
 %postun -p /sbin/ldconfig -n %{lib_name}
+%endif
 
 %files
 %defattr(-,root,root)
