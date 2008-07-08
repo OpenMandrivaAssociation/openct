@@ -6,17 +6,18 @@
 Summary:	Smartcard Terminal Tnterface
 Name:		openct
 Version:	0.6.14
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	LGPL
+Group:		System/Servers
 URL:		http://www.opensc.org
 Source0:	http://www.opensc.org/files/%{name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-root
+Patch0:		openct-ct_socket_getcreds_fix.diff
 BuildRequires:	pcsc-lite-devel flex libusb-devel
 BuildRequires:	libltdl-devel udev-tools
 Requires:	%{lib_name} = %{version}
-Group:		System/Servers
 Requires(pre):  rpm-helper
 Requires(post): rpm-helper
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 This is OpenCT, a middleware framework for smart card terminals.
@@ -48,10 +49,20 @@ Obsoletes:      %{olddevel} < 0.6.14
 Header files, static libraries, and documentation for %{name}.
 
 %prep
+
 %setup -q 
+%patch0 -p0
 
 %build
-%configure2_5x --with-pcsc --without-bundle-dir --localstatedir=%{_var}
+rm -f configure
+autoheader
+autoconf
+
+%configure2_5x \
+    --with-pcsc \
+    --without-bundle-dir \
+    --localstatedir=%{_var}
+
 make
 
 sed -i -e "s,^DRIVER=,DRIVERS=," etc/openct.udev
@@ -61,6 +72,7 @@ make -k check
 
 %install
 rm -rf %{buildroot}
+
 %makeinstall_std 
 #install -d %{buildroot}/%{_sysconfdir}/hotplug/usb
 install -d %{buildroot}/%{_initrddir}
@@ -79,9 +91,6 @@ install -m 0644 etc/openct.udev %{buildroot}%{_sysconfdir}/udev/rules.d/70-%{nam
 # reference to home or tmp
 rm -rf %{buildroot}/%{_libdir}/libifd.la
 
-%clean
-rm -rf %{buildroot}
-
 %preun 
 %_preun_service openct
 
@@ -91,9 +100,13 @@ rm -rf %{buildroot}
 %if %mdkversion < 200900
 %post -p /sbin/ldconfig -n %{lib_name}
 %endif
+
 %if %mdkversion < 200900
 %postun -p /sbin/ldconfig -n %{lib_name}
 %endif
+
+%clean
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
@@ -119,4 +132,3 @@ rm -rf %{buildroot}
 %{_libdir}/*.*a
 %{_libdir}/pkgconfig/*.pc
 %{_includedir}/*
-
