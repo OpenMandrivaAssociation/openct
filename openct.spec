@@ -5,13 +5,12 @@
 
 Summary:	Smartcard Terminal Tnterface
 Name:		openct
-Version:	0.6.14
-Release:	%mkrel 4
+Version:	0.6.15
+Release:	%mkrel 1
 License:	LGPL
 Group:		System/Servers
 URL:		http://www.opensc.org
 Source0:	http://www.opensc.org/files/%{name}-%{version}.tar.gz
-Patch0:		openct-ct_socket_getcreds_fix.diff
 BuildRequires:	pcsc-lite-devel flex libusb-devel
 BuildRequires:	libltdl-devel udev-tools
 Requires:	%{lib_name} = %{version}
@@ -49,20 +48,13 @@ Obsoletes:      %{olddevel} < 0.6.14
 Header files, static libraries, and documentation for %{name}.
 
 %prep
-
 %setup -q 
-%patch0 -p0
 
 %build
-rm -f configure
-autoheader
-autoconf
-
 %configure2_5x \
-    --with-pcsc \
-    --without-bundle-dir \
+    --enable-pcsc \
+    --without-bundle \
     --localstatedir=%{_var}
-
 make
 
 sed -i -e "s,^DRIVER=,DRIVERS=," etc/openct.udev
