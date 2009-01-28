@@ -6,11 +6,11 @@
 Summary:	Smartcard Terminal Tnterface
 Name:		openct
 Version:	0.6.15
-Release:	%mkrel 1
-License:	LGPL
+Release:	%mkrel 2
+License:	LGPLv2+
 Group:		System/Servers
 URL:		http://www.opensc.org
-Source0:	http://www.opensc.org/files/%{name}-%{version}.tar.gz
+Source0:	http://www.opensc-project.org/files/openct/%{name}-%{version}.tar.gz
 BuildRequires:	pcsc-lite-devel flex libusb-devel
 BuildRequires:	libltdl-devel udev-tools
 Requires:	%{lib_name} = %{version}
@@ -48,14 +48,19 @@ Obsoletes:      %{olddevel} < 0.6.14
 Header files, static libraries, and documentation for %{name}.
 
 %prep
-%setup -q 
+%setup -q
+# fix lib64 std rpaths and other weirdness
+sed -i -e 's|/lib /usr/lib\b|/%{_lib} %{_libdir}|' \
+       -e 's|^usrsbindir=.*$|usrsbindir="%{_sbindir}"|' \
+       -e 's|^usrlibdir=.*$|usrlibdir="%{_libdir}"|' configure 
+sed -i -e 's|^\([A-Z]\)|# \1|' etc/reader.conf.in
 
 %build
 %configure2_5x \
     --enable-pcsc \
     --without-bundle \
     --localstatedir=%{_var}
-make
+%make
 
 sed -i -e "s,^DRIVER=,DRIVERS=," etc/openct.udev
 
@@ -115,7 +120,7 @@ rm -rf %{buildroot}
 %files -n %{lib_name}
 %defattr(-,root,root)
 %doc TODO
-%{_libdir}/*.so.*
+%{_libdir}/*.so.%{lib_major}*
 
 %files -n %{libdevel}
 %defattr(-,root,root)
