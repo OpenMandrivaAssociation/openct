@@ -6,11 +6,12 @@
 Summary:	Smartcard Terminal Tnterface
 Name:		openct
 Version:	0.6.15
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	LGPLv2+
 Group:		System/Servers
 URL:		http://www.opensc.org
 Source0:	http://www.opensc-project.org/files/openct/%{name}-%{version}.tar.gz
+Patch0:		initscript-lsb.patch
 BuildRequires:	pcsc-lite-devel flex libusb-devel
 BuildRequires:	libltdl-devel udev-tools
 Requires:	%{lib_name} = %{version}
@@ -49,6 +50,7 @@ Header files, static libraries, and documentation for %{name}.
 
 %prep
 %setup -q
+%patch0 -p1
 # fix lib64 std rpaths and other weirdness
 sed -i -e 's|/lib /usr/lib\b|/%{_lib} %{_libdir}|' \
        -e 's|^usrsbindir=.*$|usrsbindir="%{_sbindir}"|' \
@@ -76,8 +78,8 @@ install -d %{buildroot}/%{_initrddir}
 install -d %{buildroot}/%{_var}/run/openct
 cp %{_builddir}/%{name}-%{version}/%{_sysconfdir}/openct.conf %{buildroot}/%{_sysconfdir}
 
-perl -pi -e "s|#! /bin/sh|#! /bin/sh\n#\n# This shell script takes care of starting and stopping\n# openct server\n#\n# chkconfig: 345 39 50\n# description: Smartcard Terminal Tnterface|" %{_builddir}/%{name}-%{version}/%{_sysconfdir}/init-script 
-cp %{_builddir}/%{name}-%{version}/%{_sysconfdir}/init-script %{buildroot}/%{_initrddir}/%{name}
+#perl -pi -e "s|#! /bin/sh|#! /bin/sh\n#\n# This shell script takes care of starting and stopping\n# openct server\n#\n# chkconfig: 345 39 50\n# description: Smartcard Terminal Tnterface|" %{_builddir}/%{name}-%{version}/%{_sysconfdir}/init-script 
+install -m755 %{_builddir}/%{name}-%{version}/%{_sysconfdir}/init-script %{buildroot}/%{_initrddir}/%{name}
 
 install -d -m755 %{buildroot}%{_sysconfdir}/udev/rules.d
 perl -pi -e 's!/etc/hotplug/usb/%{name}!%{name}!' etc/openct.udev
