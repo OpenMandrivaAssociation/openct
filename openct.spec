@@ -5,7 +5,7 @@
 
 Summary:	Smartcard Terminal Tnterface
 Name:		openct
-Version:	0.6.18
+Version:	0.6.19
 Release:	%mkrel 1
 License:	LGPLv2+
 Group:		System/Servers
