@@ -1,0 +1,11 @@
+--- openct-0.6.16/etc/init-script.in.orig	2009-05-10 19:31:16.000000000 +0200
++++ openct-0.6.16/etc/init-script.in	2009-05-10 19:34:05.000000000 +0200
+@@ -1,5 +1,8 @@
+ #! /bin/sh
+ 
++# chkconfig: 2345 39 50
++# description: Smartcard Terminal framework
++#
+ ### BEGIN INIT INFO
+ # Provides:          openct
+ # Required-Start:    $syslog
