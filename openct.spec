@@ -5,7 +5,7 @@
 Summary:	Smartcard Terminal Tnterface
 Name:		openct
 Version:	0.6.20
-Release:	10
+Release:	11
 License:	LGPLv2+
 Group:		System/Servers
 Url:		http://www.opensc.org
