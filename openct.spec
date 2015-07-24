@@ -63,6 +63,7 @@ sed -i -e "s,^DRIVER=,DRIVERS=," etc/openct.udev
 make -k check
 
 %install
+mkdir -p %{buildroot}%{_sysconfdir}
 %makeinstall_std 
 #install -d %{buildroot}/%{_sysconfdir}/hotplug/usb
 install -d %{buildroot}/%{_initrddir}
