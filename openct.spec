@@ -16,6 +16,7 @@ BuildRequires:	libltdl-devel
 BuildRequires:	pkgconfig(libusb)
 BuildRequires:	pkgconfig(libpcsclite)
 BuildRequires:	pkgconfig(udev)
+BuildRequires:	rpm-helper
 Requires(pre,post):	rpm-helper
 
 %description
@@ -41,8 +42,8 @@ Requires:	%{libname} = %{version}-%{release}
 This package includes the development files for %{name}.
 
 %prep
-%setup -q
-%apply_patches
+%autosetup -p1
+
 # fix lib64 std rpaths and other weirdness
 sed -i -e 's|/lib /usr/lib\b|/%{_lib} %{_libdir}|' \
        -e 's|^usrsbindir=.*$|usrsbindir="%{_sbindir}"|' \
@@ -50,12 +51,12 @@ sed -i -e 's|/lib /usr/lib\b|/%{_lib} %{_libdir}|' \
 sed -i -e 's|^\([A-Z]\)|# \1|' etc/reader.conf.in
 
 %build
-%configure2_5x \
+%configure \
 	--disable-static \
 	--enable-pcsc \
 	--without-bundle \
 	--localstatedir=%{_var}
-%make
+%make_build
 
 sed -i -e "s,^DRIVER=,DRIVERS=," etc/openct.udev
 
@@ -64,7 +65,7 @@ make -k check
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}
-%makeinstall_std 
+%make_install
 #install -d %{buildroot}/%{_sysconfdir}/hotplug/usb
 install -d %{buildroot}/%{_initrddir}
 install -d %{buildroot}/%{_var}/run/openct
@@ -74,10 +75,12 @@ cp %{_builddir}/%{name}-%{version}/%{_sysconfdir}/openct.conf %{buildroot}/%{_sy
 install -m755 %{_builddir}/%{name}-%{version}/%{_sysconfdir}/init-script %{buildroot}/%{_initrddir}/%{name}
 
 install -d -m755 %{buildroot}%{_sysconfdir}/udev/rules.d
-perl -pi -e 's!/etc/hotplug/usb/%{name}!%{name}!' etc/openct.udev
+sed -i -e 's!/etc/hotplug/usb/%{name}!%{name}!' etc/openct.udev
 install -m 0644 etc/openct.udev %{buildroot}%{_sysconfdir}/udev/rules.d/70-%{name}.rules
 #install -d -m755 %{buildroot}/%{_lib}/udev/
 #install -m755 etc/hotplug.openct %{buildroot}/%{_lib}/udev/%{name}
+
+rm -rf %{buildroot}%{_docdir}/%{name}
 
 %preun 
 %_preun_service openct
