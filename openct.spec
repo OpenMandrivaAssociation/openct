@@ -8,7 +8,7 @@ Version:	0.6.20
 Release:	16
 License:	LGPLv2+
 Group:		System/Servers
-Url:		http://www.opensc.org
+Url:		https://www.opensc.org
 Source0:	http://www.opensc-project.org/files/openct/%{name}-%{version}.tar.gz
 Patch0:		initscript-lsb.patch
 BuildRequires:	flex
